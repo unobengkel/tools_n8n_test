@@ -1,8 +1,11 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS  # Tambahkan ini
 import sqlite3
 
 app = Flask(__name__)
+CORS(app)  # Tambahkan ini untuk mengizinkan akses dari browser
 DB_NAME = 'data.db'
+# ... sisa kode lainnya tetap sama
 
 def init_db():
     with sqlite3.connect(DB_NAME) as conn:
@@ -46,6 +49,15 @@ def create_user():
         new_id = cursor.lastrowid
     
     return jsonify({"message": "User berhasil dibuat", "id": new_id}), 201
+
+@app.route('/users/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    try:
+        with sqlite3.connect(DB_NAME) as conn:
+            conn.execute("DELETE FROM users WHERE id = ?", (user_id,))
+        return jsonify({"message": "User deleted"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     init_db()
