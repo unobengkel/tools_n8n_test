@@ -11,6 +11,20 @@ def init_db():
                          nama TEXT NOT NULL, 
                          email TEXT NOT NULL)''')
 
+# --- ENDPOINT TEST ---
+@app.route('/', methods=['GET'])
+def health_check():
+    return jsonify({
+        "status": "online",
+        "message": "API Flask untuk n8n sudah berjalan!",
+        "port": 1000
+    }), 200
+
+@app.route('/test', methods=['GET'])
+def test_connection():
+    return "<h1>Koneksi Berhasil!</h1><p>API siap menerima request CRUD.</p>", 200
+# ---------------------
+
 @app.route('/users', methods=['GET'])
 def get_users():
     with sqlite3.connect(DB_NAME) as conn:
